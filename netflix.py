@@ -1,13 +1,16 @@
 import matplotlib.pyplot as plt
 import os.path
+import logging
 
 global years_dic
+
 
 def plot(type_graphic: str, **kwargs) -> object:
     """
     Realiza a plotagem de acordo com os parametros
 
-    :param kwargs:
+    :param type_graphic:
+    :param
         :key directory: caminho do csv da netflix
         :key title: titulo do grafico
         :key label_axisx: texto do eixo x
@@ -29,11 +32,9 @@ def plot(type_graphic: str, **kwargs) -> object:
         eixoX, eixoY = populace_xy_bars(amount_date)
         plt.bar(eixoX, eixoY)
     else:
-        print('tipode grafico compare ou invalido por isso o compare')
+        print('tipo de grafico compare ou invalido por isso o compare')
         years(amount_date)
         separates_axes_year(amount_date, **kwargs)
-
-
 
     if 'label_rotation_x' in kwargs:
         plt.xticks(rotation=kwargs.get('label_rotation_x'))
@@ -70,6 +71,7 @@ def upload_csv(directory: str = 'NetflixViewingHistory.csv') -> list:
     :param directory: Caminho onde o arquivo se encontra
     :return: Uma lista com os dados
     """
+    logging.info('upload csv')
     data = open(directory).readlines()
     return data
 
