@@ -64,7 +64,7 @@ def plot(type_graphic: str, **kwargs) -> object:
     return True
 
 
-def upload_csv(directory: str = 'NetflixViewingHistory.csv') -> list:
+def upload_csv(directory: str = 'arquivos_testes/NetflixViewingHistory.csv') -> list:
     """
     Carrega os dados do csv disponibilizado pela netflix
 

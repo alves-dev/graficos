@@ -55,11 +55,12 @@ def main():
 
     logging.info('---Iniciado---')
     # netflix(type_plot=True, type_scatter=True)
-    csvs = ['Historico_tempo_22 - Página1.csv', 'Historico_tempo_23 - Página1.csv', 'Historico_tempo_20 - Página1.csv'
-            , 'Historico_tempo_21 - Página1.csv', 'Historico_tempo_24 - Página1.csv', 'Historico_tempo_25 - Página1.csv'
-            , 'Historico_tempo_26 - Página1.csv']
+    csvs = ['arquivos_testes/Historico_tempo_22 - Página1.csv', 'arquivos_testes/Historico_tempo_23 - Página1.csv',
+            'arquivos_testes/Historico_tempo_20 - Página1.csv', 'arquivos_testes/Historico_tempo_21 - Página1.csv',
+            'arquivos_testes/Historico_tempo_24 - Página1.csv', 'arquivos_testes/Historico_tempo_25 - Página1.csv',
+            'arquivos_testes/Historico_tempo_26 - Página1.csv']
     plot_time(directory=csvs)
-    #netflix()
+    netflix()
     logging.info('---Finalizado---')
 
 
