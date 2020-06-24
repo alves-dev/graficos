@@ -229,7 +229,7 @@ def assigns_axes_years(x: list, y: list, year: str, **kwargs):
             no_type = False
 
     if no_type:
-        print('não definifo o tipo, padrao sera aplixado')
+        print('não definifo o tipo, padrao sera aplicado')
         plt.plot(x, y, label=year)
         plt.scatter(x, y)
 

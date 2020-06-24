@@ -27,28 +27,39 @@ def netflix(type_graphic: str = 'compare', **kwargs) -> json:
     return json
 
 
-def time(directory: list = [], **kwargs) -> json:
+def plot_time(directory: list = [], **kwargs) -> str:
     """
+    Realiza as chamadas dos metodos na ordem...
 
     :param directory: Lista dos csv para criar o data frame
-    :param
-        :key days: uma lista de dias da semana para serem filtrado = ['Segunda','terca','']
-        :key dates: uma lista contendo datas para serem filtradas = ['22/12/2019','21/02/2020']
-    :return:
+        :key index: uma lista de index para serem filtrado = ['04:30:00', ..., '07:30:00']
+        :key index_interval: uma lista de dois index para serem filtrado entre eles = ['08:00:00', '17:30:00']
+        :key columns: uma lista de datas para serem filtradas = ['10/05/2020',..., '15/05/2020']
+        :key columns_days: uma lista de dias da semana para serem filtrado = ['Segunda','terca','']
+        :key columns_interval: uma lista contendo datas para serem filtradas entre elas= ['22/12/2019','21/02/2020']
+    :return: ALTERAR O RETORNO PARA UM json
     """
-    tm.new_data_frame(directory=directory, **kwargs)
-    tm.plotar()
+    tm.new_data_frame(directory=directory)
+    #tm.filters(columns_interval=['10/05/2020', '25/05/2020'], columns_days=['Segunda'],
+    #           index_interval=['08:00:00', '23:30:00'])
+    tm.filters()
+    tm.extract_values()
+    data = tm.filter_activities(['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'null', 'Faculdade'])
+    tm.plotar(data=data, type='all')
+    return 'é para retornar um objeto json com as info'
 
 
 def main():
     logging.basicConfig(filename='logs/'+datetime.today().strftime("%Y-%m-%d") + '.log', level=logging.INFO,
-                        format='%(asctime)s - %(levelname)s: %(message)s', datefmt='%m/%d/%Y %I:%M:%S')
+                        format='%(asctime)s - %(levelname)s: %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
 
     logging.info('---Iniciado---')
     # netflix(type_plot=True, type_scatter=True)
-    csvs = ['Historico_tempo_22 - Página1.csv', 'Historico_tempo_23 - Página1.csv', 'Historico_tempo_20 - Página1.csv']
-    time(directory=csvs)
-    # netflix()
+    csvs = ['Historico_tempo_22 - Página1.csv', 'Historico_tempo_23 - Página1.csv', 'Historico_tempo_20 - Página1.csv'
+            , 'Historico_tempo_21 - Página1.csv', 'Historico_tempo_24 - Página1.csv', 'Historico_tempo_25 - Página1.csv'
+            , 'Historico_tempo_26 - Página1.csv']
+    plot_time(directory=csvs)
+    #netflix()
     logging.info('---Finalizado---')
 
 
