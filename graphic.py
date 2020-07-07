@@ -3,6 +3,7 @@ import my_time as tm
 import json
 import logging
 from datetime import datetime
+from constants import DIRECTORY_LOGS, DIRECTORY_RETORNOS
 
 
 def netflix(type_graphic: str = 'compare', **kwargs) -> json:
@@ -39,18 +40,20 @@ def plot_time(directory: list = [], **kwargs) -> str:
         :key columns_interval: uma lista contendo datas para serem filtradas entre elas= ['22/12/2019','21/02/2020']
     :return: ALTERAR O RETORNO PARA UM json
     """
-    tm.new_data_frame(directory=directory)
+    return_new_data = tm.new_data_frame(directory=directory)
     #tm.filters(columns_interval=['10/05/2020', '25/05/2020'], columns_days=['Segunda'],
     #           index_interval=['08:00:00', '23:30:00'])
     tm.filters()
     tm.extract_values()
-    data = tm.filter_activities(['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'null', 'Faculdade'])
+    #data = tm.filter_activities(['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'Faculdade'])
+    data = tm.filter_activities(['Dev', 'TCC'])
     tm.plotar(data=data, type='all')
-    return 'é para retornar um objeto json com as info'
+    return_json = return_new_data
+    return return_json
 
 
 def main():
-    logging.basicConfig(filename='logs/'+datetime.today().strftime("%Y-%m-%d") + '.log', level=logging.INFO,
+    logging.basicConfig(filename=DIRECTORY_LOGS+datetime.today().strftime("%Y-%m-%d") + '.log', level=logging.INFO,
                         format='%(asctime)s - %(levelname)s: %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
 
     logging.info('---Iniciado---')
@@ -59,10 +62,15 @@ def main():
             'arquivos_testes/Historico_tempo_20 - Página1.csv', 'arquivos_testes/Historico_tempo_21 - Página1.csv',
             'arquivos_testes/Historico_tempo_24 - Página1.csv', 'arquivos_testes/Historico_tempo_25 - Página1.csv',
             'arquivos_testes/Historico_tempo_26 - Página1.csv']
-    plot_time(directory=csvs)
-    netflix()
-    logging.info('---Finalizado---')
+    retorno = plot_time(directory=csvs)
+    #netflix()
 
+    print(retorno)
+    with open(DIRECTORY_RETORNOS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '.json', 'w') as json_file:
+        json.dump(retorno, json_file, indent=4, ensure_ascii=False)
+        logging.info(f'Arquivo {DIRECTORY_RETORNOS + datetime.today().strftime("%Y-%m-%d_%H-%M")}.json salvo!')
+
+    logging.info('---Finalizado---')
 
 if __name__ == '__main__':
     main()

@@ -2,13 +2,16 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime as dt
 import logging
+from constants import DIRECTORY_PLOTAGENS
+from datetime import datetime
 
 global data_time
 global data_time_filtered
 global values_extract
+global activities_extract
 
 
-def new_data_frame(directory: list) -> None:
+def new_data_frame(directory: list) -> dict:
     """
     Seta a variável global data_time com os dados dos csv passado como parametro
 
@@ -16,12 +19,12 @@ def new_data_frame(directory: list) -> None:
     """
     logging.info('new_data_frame: Criando um data frame com os CSV')
     global data_time
-    upload_csv(directory=directory)
+    return_upload = upload_csv(directory=directory)
     rename_index()
     order_columns()
     alter_nan()
     logging.info('new_data_frame: Data frame criado')
-
+    return return_upload
 
 def plotar(data: list, type: list = ['all']) -> None:
     print(data)
@@ -49,7 +52,11 @@ def plotar(data: list, type: list = ['all']) -> None:
         ax.pie(sizes, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90)
         ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
         plt.legend()
-        plt.show()
+        figure = plt.gcf()
+        figure.set_size_inches(12, 8)
+        plt.savefig(DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_pie')
+        #plt.show()
+
 
     if 'bar' in type or 'all' in type:
         fig, ax = plt.subplots()
@@ -60,23 +67,30 @@ def plotar(data: list, type: list = ['all']) -> None:
         ax.set_xticks(labels)
         ax.set_xticklabels(labels)
         plt.legend()
-        plt.show()
+        figure = plt.gcf()
+        figure.set_size_inches(12, 8)
+        plt.savefig(DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_bar')
+        #plt.show()
 
     if 'stem' in type or 'all' in type:
         plt.stem(labels, sizes)
         plt.legend()
-        plt.show()
+        figure = plt.gcf()
+        figure.set_size_inches(12, 8)
+        plt.savefig(DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_stem')
+        #plt.show()
 
     if 'scatter' in type or 'all' in type:
         plot_scatter(data)
 
 
 def plot_scatter(data) -> None:
+    global activities_extract
     #lista = ['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso',  'Faculdade']
     lista = ['Trabalho', 'Dormi', 'Descanso']
     labels = []
     sizes = []
-    for act in lista:
+    for act in activities_extract:
         for i in data:
             labels.append(list(i.keys())[0])
             temp = (list(i.values())[0])
@@ -92,7 +106,10 @@ def plot_scatter(data) -> None:
 
     plt.xticks(rotation='60')
     plt.legend()
-    plt.show()
+    figure = plt.gcf()
+    figure.set_size_inches(12, 8)
+    plt.savefig(DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_scatter')
+    #plt.show()
 
 
 def auto_label(rects, ax):
@@ -106,7 +123,7 @@ def auto_label(rects, ax):
                     ha='center', va='bottom')
 
 
-def upload_csv(directory: list) -> None:
+def upload_csv(directory: list) -> dict:
     """
     Carrega os dados dos CSVs, e unifica todos em um só data frame
 
@@ -122,6 +139,7 @@ def upload_csv(directory: list) -> None:
     global data_time
     data_time = unificado.drop(columns=['Index'])
     logging.info('upload_csv: CSVs lidos e unificados em um unico data frame')
+    return {'Processados': directory}
 
 
 def rename_index() -> None:
@@ -192,7 +210,7 @@ def filters(index: list = None, index_interval: list = None, columns: list = Non
     :param index: uma lista de index para serem filtrado = ['04:30:00', ..., '07:30:00']
     :param index_interval: uma lista de dois index para serem filtrado entre eles = ['08:00:00', '17:30:00']
     :param columns: uma lista de datas para serem filtradas = ['10/05/2020',..., '15/05/2020']
-    :param columns_days: uma lista de dias da semana para serem filtrado = ['Segunda','terca','']
+    :param columns_days: uma lista de dias da semana para serem filtrado = ['Segunda','terca','...']
     :param columns_interval: uma lista contendo datas para serem filtradas entre elas= ['22/12/2019','21/02/2020']
     :return: None
     """
@@ -303,11 +321,14 @@ def filter_activities(activities: list = None) -> list:
     """
     logging.info(f'filter_activities: Iniciando o filtro das atividades: {activities}')
     global values_extract
+    global activities_extract
+    activities_extract = activities
 
     activities_filtered = []
     empty = False
     if activities is None:
         empty = True
+        activities_extract = []
 
     for i in values_extract:
         v = list(i.values())[0]
@@ -316,7 +337,11 @@ def filter_activities(activities: list = None) -> list:
 
         if empty:
             activities = v
+
         for act in activities:
+            if act not in activities_extract:
+                activities_extract.append(act)
+
             if act in v:
                 sub_dict_temp[act] = v[act]
             dict_temp[list(i.keys())[0]] = sub_dict_temp
