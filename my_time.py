@@ -51,6 +51,8 @@ def plotar(data: list, type: list = ['all']) -> None:
         fig, ax = plt.subplots()
         ax.pie(sizes, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90)
         ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        ax.set_ylabel('% em relação as atividades filtradas')
+        ax.set_title('Atividades')
         plt.legend()
         figure = plt.gcf()
         figure.set_size_inches(12, 8)
@@ -73,8 +75,11 @@ def plotar(data: list, type: list = ['all']) -> None:
         #plt.show()
 
     if 'stem' in type or 'all' in type:
-        plt.stem(labels, sizes)
-        plt.legend()
+        fig, ax = plt.subplots()
+        ax.stem(labels, sizes)
+        ax.legend()
+        ax.set_ylabel('Quantidade / 2 = X horas ')
+        ax.set_title('Atividades')
         figure = plt.gcf()
         figure.set_size_inches(12, 8)
         plt.savefig(DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_stem')
@@ -86,8 +91,9 @@ def plotar(data: list, type: list = ['all']) -> None:
 
 def plot_scatter(data) -> None:
     global activities_extract
-    #lista = ['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso',  'Faculdade']
-    lista = ['Trabalho', 'Dormi', 'Descanso']
+
+    fig, ax = plt.subplots()
+
     labels = []
     sizes = []
     for act in activities_extract:
@@ -98,12 +104,14 @@ def plot_scatter(data) -> None:
             if act in list(temp.keys()):
                 val = temp[act]
             sizes.append(val)
-        plt.plot(labels, sizes, label=act)
-        plt.scatter(labels, sizes)
+        ax.plot(labels, sizes, label=act)
+        ax.scatter(labels, sizes)
         print(f'{labels}, {sizes}, {act}')
         labels = []
         sizes = []
 
+    ax.set_ylabel('Quantidade / 2 = X horas ')
+    ax.set_title('Atividades')
     plt.xticks(rotation='60')
     plt.legend()
     figure = plt.gcf()

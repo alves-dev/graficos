@@ -46,8 +46,8 @@ def plot_time(directory: list = [], **kwargs) -> str:
     tm.filters()
     tm.extract_values()
     #data = tm.filter_activities(['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'Faculdade'])
-    data = tm.filter_activities(['Dev', 'TCC'])
-    tm.plotar(data=data, type='all')
+    data = tm.filter_activities()
+    tm.plotar(data=data, type=['all'])
     return_json = return_new_data
     return return_json
 
