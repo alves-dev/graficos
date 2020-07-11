@@ -26,6 +26,7 @@ def new_data_frame(directory: list) -> dict:
     logging.info('new_data_frame: Data frame criado')
     return return_upload
 
+
 def plotar(data: list, type: list = ['all']) -> None:
     print(data)
     activities_value = {}
@@ -46,6 +47,7 @@ def plotar(data: list, type: list = ['all']) -> None:
         labels.append(list(activities_value.keys())[o])
         sizes.append(list(activities_value.values())[o])
         o += 1
+    logging.info('plotar: Criada a lista de labels e valores para a plotagem a partir do parametro data')
 
     if 'pie' in type or 'all' in type:
         fig, ax = plt.subplots()
@@ -56,7 +58,9 @@ def plotar(data: list, type: list = ['all']) -> None:
         plt.legend()
         figure = plt.gcf()
         figure.set_size_inches(12, 8)
-        plt.savefig(DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_pie')
+        name = return_name_graphic('pie')
+        plt.savefig(name)
+        logging.info(f'plotar: Grafico pie plotado e salvo em {name}')
         #plt.show()
 
 
@@ -71,7 +75,9 @@ def plotar(data: list, type: list = ['all']) -> None:
         plt.legend()
         figure = plt.gcf()
         figure.set_size_inches(12, 8)
-        plt.savefig(DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_bar')
+        name = return_name_graphic('bar')
+        plt.savefig(name)
+        logging.info(f'plotar: Grafico bar plotado e salvo em {name}')
         #plt.show()
 
     if 'stem' in type or 'all' in type:
@@ -82,7 +88,9 @@ def plotar(data: list, type: list = ['all']) -> None:
         ax.set_title('Atividades')
         figure = plt.gcf()
         figure.set_size_inches(12, 8)
-        plt.savefig(DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_stem')
+        name = return_name_graphic('stem')
+        plt.savefig(name)
+        logging.info(f'plotar: Grafico stem plotado e salvo em {name}')
         #plt.show()
 
     if 'scatter' in type or 'all' in type:
@@ -116,7 +124,9 @@ def plot_scatter(data) -> None:
     plt.legend()
     figure = plt.gcf()
     figure.set_size_inches(12, 8)
-    plt.savefig(DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_scatter')
+    name = return_name_graphic('scatter')
+    plt.savefig(name)
+    logging.info(f'plotar: Grafico scatter plotado e salvo em {name}')
     #plt.show()
 
 
@@ -177,7 +187,7 @@ def order_columns() -> None:
 
     :return: None
     """
-    logging.info('order_columns: Iniciando ordenação de colunas')
+    logging.info('order_columns: Iniciando ordenação de colunas por data')
     global data_time
 
     dates = list(data_time.columns.values)
@@ -357,5 +367,14 @@ def filter_activities(activities: list = None) -> list:
         if len(sub_dict_temp) > 0:
             activities_filtered.append(dict_temp)
 
-    logging.info(f'filter_activities: FIm do filtro das atividades, valores retornados: {activities_filtered}')
+    logging.info(f'filter_activities: Fim do filtro das atividades, valores retornados: {activities_filtered}')
     return activities_filtered
+
+
+def return_name_graphic(name: str) -> str:
+    '''
+
+    :param name: Nome do grafico
+    :return: Retorna o nome do grafico concatenado com a data e hora mas a constante DIRECTORY_PLOTAGENS
+    '''
+    return DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_' + name

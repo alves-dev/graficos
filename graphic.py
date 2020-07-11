@@ -57,13 +57,15 @@ def main():
                         format='%(asctime)s - %(levelname)s: %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
 
     logging.info('---Iniciado---')
+
     # netflix(type_plot=True, type_scatter=True)
+    # netflix()
+
     csvs = ['arquivos_testes/Historico_tempo_22 - Página1.csv', 'arquivos_testes/Historico_tempo_23 - Página1.csv',
             'arquivos_testes/Historico_tempo_20 - Página1.csv', 'arquivos_testes/Historico_tempo_21 - Página1.csv',
             'arquivos_testes/Historico_tempo_24 - Página1.csv', 'arquivos_testes/Historico_tempo_25 - Página1.csv',
             'arquivos_testes/Historico_tempo_26 - Página1.csv']
     retorno = plot_time(directory=csvs)
-    #netflix()
 
     print(retorno)
     with open(DIRECTORY_RETORNOS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '.json', 'w') as json_file:
