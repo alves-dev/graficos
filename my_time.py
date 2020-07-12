@@ -4,11 +4,14 @@ from datetime import datetime as dt
 import logging
 from constants import DIRECTORY_PLOTAGENS
 from datetime import datetime
+from return_json import ReturnJson
 
 global data_time
 global data_time_filtered
 global values_extract
 global activities_extract
+global re_json
+re_json = ReturnJson()
 
 
 def new_data_frame(directory: list) -> dict:
@@ -28,6 +31,8 @@ def new_data_frame(directory: list) -> dict:
 
 
 def plotar(data: list, type: list = ['all']) -> None:
+    global re_json
+
     print(data)
     activities_value = {}
     labels = []
@@ -49,6 +54,7 @@ def plotar(data: list, type: list = ['all']) -> None:
         o += 1
     logging.info('plotar: Criada a lista de labels e valores para a plotagem a partir do parametro data')
 
+    list_return = []
     if 'pie' in type or 'all' in type:
         fig, ax = plt.subplots()
         ax.pie(sizes, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90)
@@ -62,6 +68,7 @@ def plotar(data: list, type: list = ['all']) -> None:
         plt.savefig(name)
         logging.info(f'plotar: Grafico pie plotado e salvo em {name}')
         #plt.show()
+        list_return.append({'pie': name})
 
 
     if 'bar' in type or 'all' in type:
@@ -79,6 +86,7 @@ def plotar(data: list, type: list = ['all']) -> None:
         plt.savefig(name)
         logging.info(f'plotar: Grafico bar plotado e salvo em {name}')
         #plt.show()
+        list_return.append({'bar': name})
 
     if 'stem' in type or 'all' in type:
         fig, ax = plt.subplots()
@@ -92,12 +100,17 @@ def plotar(data: list, type: list = ['all']) -> None:
         plt.savefig(name)
         logging.info(f'plotar: Grafico stem plotado e salvo em {name}')
         #plt.show()
+        list_return.append({'stem': name})
 
     if 'scatter' in type or 'all' in type:
-        plot_scatter(data)
+        name = plot_scatter(data)
+        list_return.append({'scatter': name})
+
+    re_json.add_json('plotado', list_return)
+    re_json.save_json()
 
 
-def plot_scatter(data) -> None:
+def plot_scatter(data) -> str:
     global activities_extract
 
     fig, ax = plt.subplots()
@@ -128,6 +141,7 @@ def plot_scatter(data) -> None:
     plt.savefig(name)
     logging.info(f'plotar: Grafico scatter plotado e salvo em {name}')
     #plt.show()
+    return name
 
 
 def auto_label(rects, ax):
@@ -157,6 +171,9 @@ def upload_csv(directory: list) -> dict:
     global data_time
     data_time = unificado.drop(columns=['Index'])
     logging.info('upload_csv: CSVs lidos e unificados em um unico data frame')
+
+    global re_json
+    re_json.add_json('Processados', directory)
     return {'Processados': directory}
 
 
@@ -240,28 +257,36 @@ def filters(index: list = None, index_interval: list = None, columns: list = Non
 
     data_time_filtered = data_time
 
+    list_return = []
     if index_interval is not None:
         logging.info(f'filters : index_interval {index_interval[0]} até {index_interval[1]}')
         data_time_filtered = data_time_filtered.loc[index_interval[0]: index_interval[1], list(data_time.columns.values)]
+        list_return.append('index_interval')
 
     if index is not None:
         logging.info(f'filters : index {index}')
         data_time_filtered = data_time_filtered.loc[index, list(data_time.columns.values)]
+        list_return.append('index')
 
     if columns_interval is not None:
         logging.info(f'filters : columns_interval {columns_interval[0]} até {columns_interval[1]}')
         data_time_filtered = data_time_filtered.loc[:, columns_interval[0]: columns_interval[1]]
+        list_return.append('columns_interval')
 
     if columns is not None:
         logging.info(f'filters: columns {columns}')
         data_time_filtered = data_time_filtered[columns]
+        list_return.append('columns')
 
     if columns_days is not None:
         logging.info(f'filters : columns_days {columns_days}')
         data_time_filtered = data_time_filtered[list_days(columns_days)]
+        list_return.append('columns_days')
 
     logging.info('filters: Fim do filtramento no data frame')
     print(data_time_filtered.head())
+    global re_json
+    re_json.add_json('filters', list_return)
 
 
 def list_days(days) -> list:
@@ -367,6 +392,8 @@ def filter_activities(activities: list = None) -> list:
         if len(sub_dict_temp) > 0:
             activities_filtered.append(dict_temp)
 
+    global re_json
+    re_json.add_json('filter_activities', activities_extract)
     logging.info(f'filter_activities: Fim do filtro das atividades, valores retornados: {activities_filtered}')
     return activities_filtered
 
