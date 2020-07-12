@@ -1,4 +1,5 @@
-import netflix as nf
+import netflix as nf2
+from netflix import Netflix
 from my_time import DataFrame
 import json
 import logging
@@ -23,7 +24,11 @@ def netflix(type_graphic: str = 'compare', **kwargs) -> json:
         :key type_stem: True ou False para a plotagem no grafico, valido apenas para type_graphic= 'compare'
     :return: Uma string com o caminho da imagem gerada
     """
+    logging.info('---Iniciado netflix---')
+    # nf2.plot(type_graphic, **kwargs)
+    nf = Netflix()
     nf.plot(type_graphic, **kwargs)
+    logging.info('---Finalizado netflix---')
 
     return json
 
@@ -40,15 +45,23 @@ def plot_time(directory: list = [], **kwargs) -> dict:
         :key columns_interval: uma lista contendo datas para serem filtradas entre elas= ['22/12/2019','21/02/2020']
     :return: ALTERAR O RETORNO PARA UM json
     """
+    logging.info('---Iniciado plot_time---')
+
     df = DataFrame()
     df.new_data_frame(directory=directory)
+
     df.filters(columns_interval=['10/05/2020', '25/05/2020'], columns_days=['Segunda'],
                index_interval=['08:00:00', '23:30:00'])
     # tm.filters()
+
     df.extract_values()
+
     # data = df.filter_activities(['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'Faculdade'])
     data = df.filter_activities()
+
     return_json_dict = df.plotar(data=data, types=['all'])
+    logging.info('---Finalizado plot_time---')
+
     return return_json_dict
 
 
@@ -56,18 +69,15 @@ def main():
     logging.basicConfig(filename=DIRECTORY_LOGS+datetime.today().strftime("%Y-%m-%d") + '.log', level=logging.INFO,
                         format='%(asctime)s - %(levelname)s: %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
 
-    logging.info('---Iniciado---')
-
-    # netflix(type_plot=True, type_scatter=True)
+    netflix(type_plot=True, type_scatter=True)
     # netflix()
 
     csvs = ['arquivos_testes/Historico_tempo_22 - Página1.csv', 'arquivos_testes/Historico_tempo_23 - Página1.csv',
             'arquivos_testes/Historico_tempo_20 - Página1.csv', 'arquivos_testes/Historico_tempo_21 - Página1.csv',
             'arquivos_testes/Historico_tempo_24 - Página1.csv', 'arquivos_testes/Historico_tempo_25 - Página1.csv',
             'arquivos_testes/Historico_tempo_26 - Página1.csv']
-    return_time = plot_time(directory=csvs)
-    print(return_time)
-    logging.info('---Finalizado---')
+    # return_time = plot_time(directory=csvs)
+    # print(return_time)
 
 
 if __name__ == '__main__':
