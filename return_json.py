@@ -14,7 +14,10 @@ class ReturnJson:
     def get_json_dict(self) -> dict:
         return self.dict_return
 
-    def save_json(self):
-        with open(DIRECTORY_RETORNOS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '.json', 'w') as json_file:
+    def save_json(self) -> bool:
+        directory_name = DIRECTORY_RETORNOS + datetime.today().strftime("%Y-%m-%d_%H-%M-%S") + '.json'
+        with open(directory_name, 'w') as json_file:
             json.dump(self.dict_return, json_file, indent=4, ensure_ascii=False)
-            logging.info(f'Arquivo {DIRECTORY_RETORNOS + datetime.today().strftime("%Y-%m-%d_%H-%M")}.json salvo!')
+            logging.info(f'Arquivo ReturnJson {directory_name} salvo!')
+            return True
+        return False

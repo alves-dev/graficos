@@ -1,8 +1,12 @@
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 import os.path
 import logging
 from return_json import ReturnJson
+import netflix_rules as nr
+
 global years_dic
+from constants import DIRECTORY_PLOTAGENS
+from datetime import datetime
 
 
 class Netflix:
@@ -10,8 +14,7 @@ class Netflix:
         self.years_dic = None
         self.re_json = ReturnJson()
 
-
-    def plot(self, type_graphic: str, **kwargs) -> object:
+    def plot(self, type_graphic: str, **kwargs) -> dict:
         """
         Realiza a plotagem de acordo com os parametros
 
@@ -25,6 +28,9 @@ class Netflix:
             :key box: True ou False para caixa do grafico
         :return:
         """
+        valid = nr.type_graphic_valid(type_graphic)
+        if not valid:
+            return valid
 
         if 'directory' in kwargs and os.path.exists(kwargs.get('directory')):
             data = self.upload_csv(kwargs.get('directory'))
@@ -35,10 +41,13 @@ class Netflix:
         amount_date = self.count_date(datas)
 
         if type_graphic == 'bars':
+            self.re_json.add_json('type_graphic', 'bars')
+            logging.info(f'plot: Plotando grafico do tipo bars')
             eixoX, eixoY = self.populace_xy_bars(amount_date)
             plt.bar(eixoX, eixoY)
         else:
-            print('tipo de grafico compare ou invalido por isso o compare')
+            self.re_json.add_json('type_graphic', 'compare')
+            logging.info(f'plot: Plotando grafico do tipo compare')
             self.years(amount_date)
             self.separates_axes_year(amount_date, **kwargs)
 
@@ -66,9 +75,14 @@ class Netflix:
             plt.box(on=True)
 
         plt.legend()
-        plt.show()
-        return True
-
+        figure = plt.gcf()
+        figure.set_size_inches(12, 8)
+        name = self.return_name_graphic('netflix')
+        plt.savefig(name)
+        # plt.show()
+        self.re_json.add_json('plotado', name)
+        self.re_json.save_json()
+        return self.re_json.get_json_dict()
 
     def upload_csv(self, directory: str = 'arquivos_testes/NetflixViewingHistory.csv') -> list:
         """
@@ -77,14 +91,15 @@ class Netflix:
         :param directory: Caminho onde o arquivo se encontra
         :return: Uma lista com os dados
         """
-        logging.info('upload csv')
         data = open(directory).readlines()
+        logging.info(f'upload_csv: Arquivo lido {directory}')
+        self.re_json.add_json('processado', directory)
         return data
-
 
     def dates_organization(self, data: list) -> list:
         """
-        Retira o dia da data deixando assim apenas o mẽs e ano, e reverte a ordem dos dados do mais antigo para o mais novo
+        Retira o dia da data deixando assim apenas o mẽs e ano, e reverte a ordem dos dados do mais antigo para o
+        mais novo
 
         :param data: Dados do netflix
         :return: Lista com datas ajustadas
@@ -98,9 +113,8 @@ class Netflix:
                 datas.append(date)
 
         datas.reverse()
-
+        logging.info(f'dates_organization: Retirado o dia da data, ficando mes e ano')
         return datas
-
 
     def count_date(self, datas: list) -> list:
         """
@@ -124,9 +138,8 @@ class Netflix:
             intereitor += 1
             if intereitor == len(datas):
                 amount_date.append({'date': last_date, 'amount': cont})
-
+        logging.info(f'count_date: Realizado a contagem de titulos por mes')
         return amount_date
-
 
     def populace_xy_bars(self, amount_date: list) -> list:
         """
@@ -141,16 +154,16 @@ class Netflix:
         for i in amount_date:
             axisX.append(i['date'])
             axisY.append(i['amount'])
-
+        logging.info(f'populace_xy_bars: Eixos X e Y foram populados com os valores, para bars')
         return axisX, axisY
-
 
     def years(self, datas: list) -> dict:
         """
         Recebe a lista de dados e retorna um dicionario contendo o ano e os eixos como uma lista
 
         :param datas: Quantidade por data
-        :return: um dicionario contendo o ano com o valor outro dicionario contendo o eixo x e y; {ano: {'x': [], 'y': []}}
+        :return: um dicionario contendo o ano com o valor outro dicionario contendo o eixo x e y;
+         {ano: {'x': [], 'y': []}}
         """
         years = []
         for i in datas:
@@ -161,9 +174,8 @@ class Netflix:
         years_dic = {}
         for i in years:
             years_dic.update({i: {'x': [], 'y': []}})
-
+        logging.info(f'years: Dicionario criado com o "ano" como chave')
         return years_dic
-
 
     def separates_axes_year(self, datas: list, **kwargs):
         """
@@ -172,7 +184,7 @@ class Netflix:
         :param datas: Quantidade por data
         :return: um dicionario contendo o ano com o valor outro dicionario contendo o eixo x e y; {ano: {'x': [], 'y': []}}
         """
-
+        logging.info(f'separates_axes_year: Separando os eixos por ano')
         axisX = []
         axisY = []
 
@@ -194,7 +206,6 @@ class Netflix:
             if intereitor == len(datas):
                 self.assigns_axes_years(axisX, axisY, i['date'][3:], **kwargs)
 
-
     def assigns_axes_years(self, x: list, y: list, year: str, **kwargs):
         """
         Atribui o eixo x e y para o ano certo do dicionario de anos
@@ -204,10 +215,10 @@ class Netflix:
         :param year: o ano referente aos valores de x e y
         :return:
         """
-
+        logging.info(f'assigns_axes_years: Plotando o ano {year}')
         years_dic[year]['x'] = x
         years_dic[year]['y'] = y
-        print(years_dic[year])
+
         val = self.add_month(x, y)
         x = val[0]
         y = val[1]
@@ -215,30 +226,40 @@ class Netflix:
         # plt.hlines(y, 0, 11, linestyles='dashed')
         # plt.vlines(x, 0, y, linestyles='dashed')
 
+        list_types = []
         no_type = True
         if 'type_plot' in kwargs:
             if kwargs.get('type_plot'):
+                logging.info(f'assigns_axes_years: type_plot sera aplicado')
                 plt.plot(x, y, label=year)
                 no_type = False
+                list_types.append('type_plot')
 
         if 'type_scatter' in kwargs:
             if kwargs.get('type_scatter'):
+                logging.info(f'assigns_axes_years: type_scatter sera aplicado')
                 if no_type:
                     plt.scatter(x, y, label=year)
                 else:
                     plt.scatter(x, y)
                 no_type = False
+                list_types.append('type_scatter')
 
         if 'type_stem' in kwargs:
             if kwargs.get('type_stem'):
+                logging.info(f'assigns_axes_years: type_stem sera aplicado')
                 plt.stem(x, y)
                 no_type = False
+                list_types.append('type_stem')
 
         if no_type:
-            print('não definifo o tipo, padrao sera aplicado')
+            logging.info(f'assigns_axes_years: Não definido o tipo; padrao sera aplicado')
             plt.plot(x, y, label=year)
             plt.scatter(x, y)
+            list_types.append('type_plot')
+            list_types.append('type_scatter')
 
+        self.re_json.add_json('types', list_types)
 
     def add_month(self, x: list, y: list) -> list:
         """
@@ -249,9 +270,7 @@ class Netflix:
         :return: retorna x e y completos com 12 posições
         """
         m = x[0]
-        print(f'mes = {m}')
         diferenca = int(m) - 1
-        print(f'diferenca = {diferenca}')
         i = 1
         x_completo = []
         while i <= diferenca:
@@ -269,7 +288,7 @@ class Netflix:
 
         for ii in y:
             y_completo.append(ii)
-
+        logging.info('add_month: Adicionado os messes faltantes do csv para ficar o ano completo com 12 messes')
         return [x_completo, y_completo]
 
     def alter_month_name(self, x: list) -> list:
@@ -330,4 +349,13 @@ class Netflix:
             if x[11] == 12 or x[11] == '12':
                 x_nomes.append(messes[11])
 
+        logging.info('alter_month_name: Alterado os números dos messes para os nomes')
         return x_nomes
+
+    def return_name_graphic(self, name: str) -> str:
+        """
+
+        :param name: Nome do grafico
+        :return: Retorna o nome do grafico concatenado com a data e hora mas a constante DIRECTORY_PLOTAGENS
+        """
+        return DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_' + name

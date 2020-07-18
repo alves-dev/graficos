@@ -1,4 +1,3 @@
-import netflix as nf2
 from netflix import Netflix
 from my_time import DataFrame
 import json
@@ -24,8 +23,9 @@ def netflix(type_graphic: str = 'compare', **kwargs) -> json:
         :key type_stem: True ou False para a plotagem no grafico, valido apenas para type_graphic= 'compare'
     :return: Uma string com o caminho da imagem gerada
     """
+    config_log()
+
     logging.info('---Iniciado netflix---')
-    # nf2.plot(type_graphic, **kwargs)
     nf = Netflix()
     nf.plot(type_graphic, **kwargs)
     logging.info('---Finalizado netflix---')
@@ -45,6 +45,7 @@ def plot_time(directory: list = [], **kwargs) -> dict:
         :key columns_interval: uma lista contendo datas para serem filtradas entre elas= ['22/12/2019','21/02/2020']
     :return: ALTERAR O RETORNO PARA UM json
     """
+    config_log()
     logging.info('---Iniciado plot_time---')
 
     df = DataFrame()
@@ -65,18 +66,21 @@ def plot_time(directory: list = [], **kwargs) -> dict:
     return return_json_dict
 
 
-def main():
-    logging.basicConfig(filename=DIRECTORY_LOGS+datetime.today().strftime("%Y-%m-%d") + '.log', level=logging.INFO,
+def config_log():
+    logging.basicConfig(filename=DIRECTORY_LOGS + datetime.today().strftime("%Y-%m-%d") + '.log', level=logging.INFO,
                         format='%(asctime)s - %(levelname)s: %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
 
-    netflix(type_plot=True, type_scatter=True)
-    # netflix()
+
+def main():
+
+    # netflix(type_plot=True, type_scatter=True)
+    netflix()
 
     csvs = ['arquivos_testes/Historico_tempo_22 - Página1.csv', 'arquivos_testes/Historico_tempo_23 - Página1.csv',
             'arquivos_testes/Historico_tempo_20 - Página1.csv', 'arquivos_testes/Historico_tempo_21 - Página1.csv',
             'arquivos_testes/Historico_tempo_24 - Página1.csv', 'arquivos_testes/Historico_tempo_25 - Página1.csv',
             'arquivos_testes/Historico_tempo_26 - Página1.csv']
-    # return_time = plot_time(directory=csvs)
+    return_time = plot_time(directory=csvs)
     # print(return_time)
 
 
