@@ -2,45 +2,14 @@
 
 <p align="center">Script Python que plota graficos com o <a href="https://matplotlib.org/">matplotlib</a>.
 
-[![PyPi Package Version](https://img.shields.io/pypi/v/pyTelegramBotAPI.svg)](https://pypi.python.org/pypi/pyTelegramBotAPI)
-[![Supported Python versions](https://img.shields.io/pypi/pyversions/pyTelegramBotAPI.svg)](https://pypi.python.org/pypi/pyTelegramBotAPI)
-[![Build Status](https://travis-ci.org/eternnoir/pyTelegramBotAPI.svg?branch=master)](https://travis-ci.org/eternnoir/pyTelegramBotAPI)
+  * [Descrição](#Descrição)
+  * [Motivação](#writing-your-first-bot)
+  * [O que aprendi](#general-api-documentation)
+  * [Start](#start)
+  
+## Descrição.
 
-  * [Getting started.](#getting-started)
-  * [Writing your first bot](#writing-your-first-bot)
-    * [Prerequisites](#prerequisites)
-    * [A simple echo bot](#a-simple-echo-bot)
-  * [General API Documentation](#general-api-documentation)
-    * [Types](#types)
-    * [Methods](#methods)
-    * [General use of the API](#general-use-of-the-api)
-      * [Message handlers](#message-handlers)
-      * [Callback Query handlers](#callback-query-handler)
-      * [Middleware handlers](#middleware-handler)
-      * [TeleBot](#telebot)
-      * [Reply markup](#reply-markup)
-      * [Inline Mode](#inline-mode)
-  * [Advanced use of the API](#advanced-use-of-the-api)
-    * [Asynchronous delivery of messages](#asynchronous-delivery-of-messages)
-    * [Sending large text messages](#sending-large-text-messages)
-    * [Controlling the amount of Threads used by TeleBot](#controlling-the-amount-of-threads-used-by-telebot)
-    * [The listener mechanism](#the-listener-mechanism)
-    * [Using web hooks](#using-web-hooks)
-    * [Logging](#logging)
-    * [Proxy](#proxy)
-  * [API conformance](#api-conformance)
-  * [Change log](#change-log)
-  * [F.A.Q.](#faq)
-    * [Bot 2.0](#bot-20)
-    * [How can I distinguish a User and a GroupChat in message.chat?](#how-can-i-distinguish-a-user-and-a-groupchat-in-messagechat)
-  * [The Telegram Chat Group](#the-telegram-chat-group)
-  * [More examples](#more-examples)
-  * [Bots using this API](#bots-using-this-api)
-
-## Getting started.
-
-This API is tested with Python 2.6, Python 2.7, Python 3.4, Pypy and Pypy 3.
-There are two ways to install the library:
+Tblo bla bla
 
 * Installation using pip (a Python package manager)*:
 

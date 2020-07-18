@@ -30,7 +30,7 @@ class Netflix:
         """
         valid = nr.type_graphic_valid(type_graphic)
         if not valid:
-            return valid
+            return False
 
         if 'directory' in kwargs and os.path.exists(kwargs.get('directory')):
             data = self.upload_csv(kwargs.get('directory'))
@@ -91,6 +91,10 @@ class Netflix:
         :param directory: Caminho onde o arquivo se encontra
         :return: Uma lista com os dados
         """
+        valid = nr.valid_archive_upload(directory)
+        if not valid:
+            return False
+
         data = open(directory).readlines()
         logging.info(f'upload_csv: Arquivo lido {directory}')
         self.re_json.add_json('processado', directory)

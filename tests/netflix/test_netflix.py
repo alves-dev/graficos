@@ -9,7 +9,10 @@ class TestNetflix(unittest.TestCase):
 
     def test_plot(self):
         re = self.net.plot(type_graphic="bars")
-        print(type(re))
+        self.assertTrue(re)
+
+    def test_upload_csv(self):
+        re = self.net.upload_csv()
         self.assertTrue(re)
 
     def test_return_name_graphic(self):

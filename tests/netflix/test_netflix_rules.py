@@ -13,3 +13,8 @@ class TestNetflixRules(unittest.TestCase):
         valid2 = netflix_rules.valid_type_graphic('bars')
         valid_false = netflix_rules.valid_type_graphic('4')
         self.assertTrue(valid and valid2 and not valid_false, msg='Não é um tipo de grafico valido')
+
+    def test_valid_archive_upload(self):
+        valid = netflix_rules.valid_archive_upload('net.csv')
+        valid_false = netflix_rules.valid_archive_upload('net.doc')
+        self.assertTrue(valid and not valid_false, msg='Arquivo não é valido!')
