@@ -30,7 +30,6 @@ class DataFrame:
 
     def plotar(self, data: list, types: list = ['all']) -> dict:
 
-        print(data)
         activities_value = {}
         labels = []
         sizes = []
@@ -44,7 +43,7 @@ class DataFrame:
                 else:
                     activities_value[list(temp.keys())[o]] = list(temp.values())[o]
                 o += 1
-        print(activities_value)
+
         o = 0
         while o < len(list(activities_value.keys())):
             labels.append(list(activities_value.keys())[o])
@@ -123,7 +122,7 @@ class DataFrame:
                 sizes.append(val)
             ax.plot(labels, sizes, label=act)
             ax.scatter(labels, sizes)
-            print(f'{labels}, {sizes}, {act}')
+
             labels = []
             sizes = []
 
@@ -168,7 +167,7 @@ class DataFrame:
         self.data_time = unificado.drop(columns=['Index'])
         logging.info('upload_csv: CSVs lidos e unificados em um unico data frame')
 
-        self.re_json.add_json('Processados', directory)
+        self.re_json.add_json('processados', directory)
 
     def rename_index(self) -> None:
         """
@@ -273,7 +272,6 @@ class DataFrame:
             list_return.append('columns_days')
 
         logging.info('filters: Fim do filtramento no data frame')
-        print(self.data_time_filtered.head())
 
         self.re_json.add_json('filters', list_return)
 
