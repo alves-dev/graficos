@@ -1,46 +1,33 @@
+from typing import Union, Tuple
 from matplotlib import pyplot as plt
-import os.path
 import logging
 from return_json import ReturnJson
-import netflix_rules as nr
-
-global years_dic
-from constants import DIRECTORY_PLOTAGENS
-from datetime import datetime
+from rules import netflix_rules as nr
+from graphics import GraphicNetflix
 
 
 class Netflix:
-    def __init__(self):
-        self.years_dic = None
+    def __init__(self, graphic_netflix: GraphicNetflix):
+        self.years_dic = {}
         self.re_json = ReturnJson()
+        self.graphic_netflix = graphic_netflix
 
-    def plot(self, type_graphic: str, **kwargs) -> dict:
+    def plot(self) -> Union[bool, dict]:
         """
         Realiza a plotagem de acordo com os parametros
 
-        :param type_graphic:
-        :param
-            :key directory: caminho do csv da netflix
-            :key title: titulo do grafico
-            :key label_axisx: texto do eixo x
-            :key label_axisy: texto do eixo y
-            :key label_rotation_x: rotação do texto eixo x, valores {ângulo em graus, 'vertical', 'horizontal'}
-            :key box: True ou False para caixa do grafico
-        :return:
+        :return: escrever aqui....
         """
-        valid = nr.type_graphic_valid(type_graphic)
+        valid = nr.type_graphic_valid(self.graphic_netflix.type_graphic)
         if not valid:
-            return valid
+            return False
 
-        if 'directory' in kwargs and os.path.exists(kwargs.get('directory')):
-            data = self.upload_csv(kwargs.get('directory'))
-        else:
-            data = self.upload_csv()
+        data = self.upload_csv()
 
         datas = self.dates_organization(data)
         amount_date = self.count_date(datas)
 
-        if type_graphic == 'bars':
+        if self.graphic_netflix.type_graphic == 'bars':
             self.re_json.add_json('type_graphic', 'bars')
             logging.info(f'plot: Plotando grafico do tipo bars')
             eixoX, eixoY = self.populace_xy_bars(amount_date)
@@ -49,48 +36,41 @@ class Netflix:
             self.re_json.add_json('type_graphic', 'compare')
             logging.info(f'plot: Plotando grafico do tipo compare')
             self.years(amount_date)
-            self.separates_axes_year(amount_date, **kwargs)
+            self.separates_axes_year(amount_date)
 
-        if 'label_rotation_x' in kwargs:
-            plt.xticks(rotation=kwargs.get('label_rotation_x'))
+        plt.xticks(rotation=self.graphic_netflix.label_rotation_x)
 
-        if 'title' in kwargs:
-            plt.title(kwargs.get('title'))
-        else:
-            plt.title('Quantidade de titulos Netflix')
+        plt.title(self.graphic_netflix.title)
 
-        if 'label_axisx' in kwargs:
-            plt.xlabel(kwargs.get('label_axisx'))
-        else:
-            plt.xlabel('mês/ano')
+        plt.xlabel(self.graphic_netflix.label_axisx)
 
-        if 'label_axisy' in kwargs:
-            plt.ylabel(kwargs.get('label_axisy'))
-        else:
-            plt.ylabel('Quantidade de Titulos')
+        plt.ylabel(self.graphic_netflix.label_axisy)
 
-        if 'box' in kwargs:
-            plt.box(on=kwargs.get('box'))
-        else:
-            plt.box(on=True)
+        plt.box(self.graphic_netflix.box)
 
         plt.legend()
         figure = plt.gcf()
         figure.set_size_inches(12, 8)
-        name = self.return_name_graphic('netflix')
+        name = self.graphic_netflix.return_name_graphic('netflix')
         plt.savefig(name)
         # plt.show()
         self.re_json.add_json('plotado', name)
         self.re_json.save_json()
         return self.re_json.get_json_dict()
 
-    def upload_csv(self, directory: str = 'arquivos_testes/NetflixViewingHistory.csv') -> list:
+    def upload_csv(self) -> Union[bool, list]:
         """
         Carrega os dados do csv disponibilizado pela netflix
 
-        :param directory: Caminho onde o arquivo se encontra
         :return: Uma lista com os dados
         """
+
+        directory = self.graphic_netflix.directory
+
+        valid = nr.valid_archive_upload(directory)
+        if not valid:
+            return False
+
         data = open(directory).readlines()
         logging.info(f'upload_csv: Arquivo lido {directory}')
         self.re_json.add_json('processado', directory)
@@ -141,7 +121,7 @@ class Netflix:
         logging.info(f'count_date: Realizado a contagem de titulos por mes')
         return amount_date
 
-    def populace_xy_bars(self, amount_date: list) -> list:
+    def populace_xy_bars(self, amount_date: list) -> Tuple[list, list]:
         """
         Popula o eixo x e y
 
@@ -170,14 +150,13 @@ class Netflix:
             year = i['date'][3:]
             if year not in years:
                 years.append(year)
-        global years_dic
-        years_dic = {}
-        for i in years:
-            years_dic.update({i: {'x': [], 'y': []}})
-        logging.info(f'years: Dicionario criado com o "ano" como chave')
-        return years_dic
 
-    def separates_axes_year(self, datas: list, **kwargs):
+        for i in years:
+            self.years_dic.update({i: {'x': [], 'y': []}})
+        logging.info(f'years: Dicionario criado com o "ano" como chave')
+        return self.years_dic
+
+    def separates_axes_year(self, datas: list):
         """
         Recebe a lista de dados e separa os eixos x e y por ano
 
@@ -194,7 +173,7 @@ class Netflix:
         for i in datas:
             if i['date'][3:] != last_date:
                 if last_date != '':
-                    self.assigns_axes_years(axisX, axisY, last_date, **kwargs)
+                    self.assigns_axes_years(axisX, axisY, last_date)
                 last_date = i['date'][3:]
 
                 axisX.clear()
@@ -204,9 +183,9 @@ class Netflix:
 
             intereitor += 1
             if intereitor == len(datas):
-                self.assigns_axes_years(axisX, axisY, i['date'][3:], **kwargs)
+                self.assigns_axes_years(axisX, axisY, i['date'][3:])
 
-    def assigns_axes_years(self, x: list, y: list, year: str, **kwargs):
+    def assigns_axes_years(self, x: list, y: list, year: str):
         """
         Atribui o eixo x e y para o ano certo do dicionario de anos
 
@@ -216,8 +195,8 @@ class Netflix:
         :return:
         """
         logging.info(f'assigns_axes_years: Plotando o ano {year}')
-        years_dic[year]['x'] = x
-        years_dic[year]['y'] = y
+        self.years_dic[year]['x'] = x
+        self.years_dic[year]['y'] = y
 
         val = self.add_month(x, y)
         x = val[0]
@@ -228,29 +207,27 @@ class Netflix:
 
         list_types = []
         no_type = True
-        if 'type_plot' in kwargs:
-            if kwargs.get('type_plot'):
-                logging.info(f'assigns_axes_years: type_plot sera aplicado')
-                plt.plot(x, y, label=year)
-                no_type = False
-                list_types.append('type_plot')
 
-        if 'type_scatter' in kwargs:
-            if kwargs.get('type_scatter'):
-                logging.info(f'assigns_axes_years: type_scatter sera aplicado')
-                if no_type:
-                    plt.scatter(x, y, label=year)
-                else:
-                    plt.scatter(x, y)
-                no_type = False
-                list_types.append('type_scatter')
+        if self.graphic_netflix.type_plot:
+            logging.info(f'assigns_axes_years: type_plot sera aplicado')
+            plt.plot(x, y, label=year)
+            no_type = False
+            list_types.append('type_plot')
 
-        if 'type_stem' in kwargs:
-            if kwargs.get('type_stem'):
-                logging.info(f'assigns_axes_years: type_stem sera aplicado')
-                plt.stem(x, y)
-                no_type = False
-                list_types.append('type_stem')
+        if self.graphic_netflix.type_scatter:
+            logging.info(f'assigns_axes_years: type_scatter sera aplicado')
+            if no_type:
+                plt.scatter(x, y, label=year)
+            else:
+                plt.scatter(x, y)
+            no_type = False
+            list_types.append('type_scatter')
+
+        if self.graphic_netflix.type_stem:
+            logging.info(f'assigns_axes_years: type_stem sera aplicado')
+            plt.stem(x, y)
+            no_type = False
+            list_types.append('type_stem')
 
         if no_type:
             logging.info(f'assigns_axes_years: Não definido o tipo; padrao sera aplicado')
@@ -302,60 +279,31 @@ class Netflix:
                   'Novembro', 'Dezembro']
         x_nomes = []
 
-        if x[0] == 1 or x[0] == '01':
-            x_nomes.append(messes[0])
+        x = [int(val) for val in x]
 
-        if len(x) > 1:
-            if x[1] == 2 or x[1] == '02':
-                x_nomes.append(messes[1])
+        x_nomes.append(messes[0])
 
-        if len(x) > 2:
-            if x[2] == 3 or x[2] == '03':
-                x_nomes.append(messes[2])
+        x_nomes.append(messes[1]) if len(x) > 1 else None
 
-        if len(x) > 3:
-            if x[3] == 4 or x[3] == '04':
-                x_nomes.append(messes[3])
+        x_nomes.append(messes[2]) if len(x) > 2 else None
 
-        if len(x) > 4:
-            if x[4] == 5 or x[4] == '05':
-                x_nomes.append(messes[4])
+        x_nomes.append(messes[3]) if len(x) > 3 else None
 
-        if len(x) > 5:
-            if x[5] == 6 or x[5] == '06':
-                x_nomes.append(messes[5])
+        x_nomes.append(messes[4]) if len(x) > 4 else None
 
-        if len(x) > 6:
-            if x[6] == 7 or x[6] == '07':
-                x_nomes.append(messes[6])
+        x_nomes.append(messes[5]) if len(x) > 5 else None
 
-        if len(x) > 7:
-            if x[7] == 8 or x[7] == '08':
-                x_nomes.append(messes[7])
+        x_nomes.append(messes[6]) if len(x) > 6 else None
 
-        if len(x) > 8:
-            if x[8] == 9 or x[8] == '09':
-                x_nomes.append(messes[8])
+        x_nomes.append(messes[7]) if len(x) > 7 else None
 
-        if len(x) > 9:
-            if x[9] == 10 or x[9] == '10':
-                x_nomes.append(messes[9])
+        x_nomes.append(messes[8]) if len(x) > 8 else None
 
-        if len(x) > 10:
-            if x[10] == 11 or x[10] == '11':
-                x_nomes.append(messes[10])
+        x_nomes.append(messes[9]) if len(x) > 9 else None
 
-        if len(x) > 11:
-            if x[11] == 12 or x[11] == '12':
-                x_nomes.append(messes[11])
+        x_nomes.append(messes[10]) if len(x) > 10 else None
+
+        x_nomes.append(messes[11]) if len(x) > 11 else None
 
         logging.info('alter_month_name: Alterado os números dos messes para os nomes')
         return x_nomes
-
-    def return_name_graphic(self, name: str) -> str:
-        """
-
-        :param name: Nome do grafico
-        :return: Retorna o nome do grafico concatenado com a data e hora mas a constante DIRECTORY_PLOTAGENS
-        """
-        return DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_' + name

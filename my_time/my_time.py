@@ -2,34 +2,35 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime as dt
 import logging
-from constants import DIRECTORY_PLOTAGENS
-from datetime import datetime
+from rules import time_rules as tr
 from return_json import ReturnJson
+from graphics import GraphicTime
 
 
 class DataFrame:
-    def __init__(self):
+    def __init__(self, graphic_time: GraphicTime):
         self.data_time = None
         self.data_time_filtered = None
         self.values_extract = None
         self.activities_extract = None
         self.re_json = ReturnJson()
+        self.graphic_time = graphic_time
 
-    def new_data_frame(self, directory: list) -> None:
+    def new_data_frame(self) -> None:
         """
         Seta a variável data_time com os dados dos csv passado como parametro
 
         :return: None
         """
         logging.info('new_data_frame: Criando um data frame com os CSV')
-        self.upload_csv(directory=directory)
+        self.upload_csv()
         self.rename_index()
         self.order_columns()
         self.alter_nan()
         logging.info('new_data_frame: Data frame criado')
 
-    def plotar(self, data: list, types: list = ['all']) -> dict:
-
+    def plotar(self, data: list) -> dict:
+        types = self.graphic_time.type_graphic
         activities_value = {}
         labels = []
         sizes = []
@@ -57,11 +58,11 @@ class DataFrame:
             ax.pie(sizes, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90)
             ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
             ax.set_ylabel('% em relação as atividades filtradas')
-            ax.set_title('Atividades')
+            ax.set_title(self.graphic_time.title)
             plt.legend()
             figure = plt.gcf()
             figure.set_size_inches(12, 8)
-            name = self.return_name_graphic('pie')
+            name = self.graphic_time.return_name_graphic('pie')
             plt.savefig(name)
             logging.info(f'plotar: Grafico pie plotado e salvo em {name}')
             # plt.show()
@@ -71,14 +72,14 @@ class DataFrame:
             fig, ax = plt.subplots()
             r = ax.bar(labels, sizes)
             self.auto_label(r, ax)
-            ax.set_ylabel('Quantidade / 2 = X horas ')
-            ax.set_title('Atividades')
+            ax.set_ylabel(self.graphic_time.label_axisy)
+            ax.set_title(self.graphic_time.title)
             ax.set_xticks(labels)
             ax.set_xticklabels(labels)
             plt.legend()
             figure = plt.gcf()
             figure.set_size_inches(12, 8)
-            name = self.return_name_graphic('bar')
+            name = self.graphic_time.return_name_graphic('bar')
             plt.savefig(name)
             logging.info(f'plotar: Grafico bar plotado e salvo em {name}')
             # plt.show()
@@ -88,11 +89,11 @@ class DataFrame:
             fig, ax = plt.subplots()
             ax.stem(labels, sizes)
             ax.legend()
-            ax.set_ylabel('Quantidade / 2 = X horas ')
-            ax.set_title('Atividades')
+            ax.set_ylabel(self.graphic_time.label_axisy)
+            ax.set_title(self.graphic_time.title)
             figure = plt.gcf()
             figure.set_size_inches(12, 8)
-            name = self.return_name_graphic('stem')
+            name = self.graphic_time.return_name_graphic('stem')
             plt.savefig(name)
             logging.info(f'plotar: Grafico stem plotado e salvo em {name}')
             # plt.show()
@@ -126,13 +127,13 @@ class DataFrame:
             labels = []
             sizes = []
 
-        ax.set_ylabel('Quantidade / 2 = X horas ')
-        ax.set_title('Atividades')
-        plt.xticks(rotation='60')
+        ax.set_ylabel(self.graphic_time.label_axisy)
+        ax.set_title(self.graphic_time.title)
+        plt.xticks(rotation=self.graphic_time.label_rotation_x)
         plt.legend()
         figure = plt.gcf()
         figure.set_size_inches(12, 8)
-        name = self.return_name_graphic('scatter')
+        name = self.graphic_time.return_name_graphic('scatter')
         plt.savefig(name)
         logging.info(f'plotar: Grafico scatter plotado e salvo em {name}')
         # plt.show()
@@ -150,14 +151,19 @@ class DataFrame:
                         textcoords="offset points",
                         ha='center', va='bottom')
 
-    def upload_csv(self, directory: list) -> None:
+    def upload_csv(self) -> bool:
         """
         Carrega os dados dos CSVs, e unifica todos em um só data frame
 
-        :param directory: Lista com os caminhos onde os arquivos se encontram
         :return: None
         """
+        directory = self.graphic_time.directory
         logging.info(f'upload_csv: Lendo arquivos CSV={directory}')
+
+        valid = tr.valid_archive_upload(directory)
+        if not valid:
+            return False
+
         unificado = pd.read_csv(directory[1])
 
         for i in directory:
@@ -224,51 +230,50 @@ class DataFrame:
         self.data_time = self.data_time.fillna('null', inplace=False)
         logging.info('alter_nan: Alterados os valores nan por null')
 
-    def filters(self, index: list = None, index_interval: list = None, columns: list = None, columns_days: list = None,
-                columns_interval: list = None) -> None:
+    def filters(self) -> None:
         """
         Realiza o filtro no data frame de acordo com os parametros,
         e atribui o valor filtrado a variável data_time_filtered.
 
-        :param index: uma lista de index para serem filtrado = ['04:30:00', ..., '07:30:00']
-        :param index_interval: uma lista de dois index para serem filtrado entre eles = ['08:00:00', '17:30:00']
-        :param columns: uma lista de datas para serem filtradas = ['10/05/2020',..., '15/05/2020']
-        :param columns_days: uma lista de dias da semana para serem filtrado = ['Segunda','terca','...']
-        :param columns_interval: uma lista contendo datas para serem filtradas entre elas= ['22/12/2019','21/02/2020']
         :return: None
         """
         logging.info('filters: Iniciando o filtramento no data frame')
 
-        if columns_days is None:
+        if len(self.graphic_time.columns_days) == 0:
             self.del_index_days()
 
         self.data_time_filtered = self.data_time
 
         list_return = []
-        if index_interval is not None:
-            logging.info(f'filters : index_interval {index_interval[0]} até {index_interval[1]}')
-            self.data_time_filtered = self.data_time_filtered.loc[index_interval[0]: index_interval[1],
-                                                                  list(self.data_time.columns.values)]
+        if len(self.graphic_time.index_interval) > 0:
+            logging.info(f'filters : index_interval {self.graphic_time.index_interval[0]} até '
+                         f'{self.graphic_time.index_interval[1]}')
+            self.data_time_filtered = self.data_time_filtered.loc[self.graphic_time.index_interval[0]:
+                                                                  self.graphic_time.index_interval[1],
+                                      list(self.data_time.columns.values)]
             list_return.append('index_interval')
 
-        if index is not None:
-            logging.info(f'filters : index {index}')
-            self.data_time_filtered = self.data_time_filtered.loc[index, list(self.data_time.columns.values)]
+        if len(self.graphic_time.index) > 0:
+            logging.info(f'filters : index {self.graphic_time.index}')
+            self.data_time_filtered = self.data_time_filtered.loc[self.graphic_time.index,
+                                                                  list(self.data_time.columns.values)]
             list_return.append('index')
 
-        if columns_interval is not None:
-            logging.info(f'filters : columns_interval {columns_interval[0]} até {columns_interval[1]}')
-            self.data_time_filtered = self.data_time_filtered.loc[:, columns_interval[0]: columns_interval[1]]
+        if len(self.graphic_time.columns_interval) > 0:
+            logging.info(f'filters : columns_interval {self.graphic_time.columns_interval[0]} até '
+                         f'{self.graphic_time.columns_interval[1]}')
+            self.data_time_filtered = self.data_time_filtered.loc[:, self.graphic_time.columns_interval[0]:
+                                                                     self.graphic_time.columns_interval[1]]
             list_return.append('columns_interval')
 
-        if columns is not None:
-            logging.info(f'filters: columns {columns}')
-            self.data_time_filtered = self.data_time_filtered[columns]
+        if len(self.graphic_time.columns) > 0:
+            logging.info(f'filters: columns {self.graphic_time.columns}')
+            self.data_time_filtered = self.data_time_filtered[self.graphic_time.columns]
             list_return.append('columns')
 
-        if columns_days is not None:
-            logging.info(f'filters : columns_days {columns_days}')
-            self.data_time_filtered = self.data_time_filtered[self.list_days(columns_days)]
+        if len(self.graphic_time.columns_days) > 0:
+            logging.info(f'filters : columns_days {self.graphic_time.columns_days}')
+            self.data_time_filtered = self.data_time_filtered[self.list_days(self.graphic_time.columns_days)]
             list_return.append('columns_days')
 
         logging.info('filters: Fim do filtramento no data frame')
@@ -335,20 +340,19 @@ class DataFrame:
         self.values_extract = values
         logging.info(f'extract_values: Extraido os valores do data frame, valores={values}')
 
-    def filter_activities(self, activities: list = None) -> list:
+    def filter_activities(self) -> list:
         """
         Filtra as atividades passada como parametro na variável values_extract
 
-        :param activities: Uma lista de str das atividades, exemplo='Dev', 'null', 'Trabalho']
         :return: Uma lista de dicionarios contendo a quantidade de cada atividade por dia,
         exemplo= [{'13/05/2020': {'Trabalho': 17}}, {'14/05/2020': {'Dev': 2, 'Trabalho': 21}}]
         """
-        logging.info(f'filter_activities: Iniciando o filtro das atividades: {activities}')
-        self.activities_extract = activities
+        logging.info(f'filter_activities: Iniciando o filtro das atividades: {self.graphic_time.activities}')
+        self.activities_extract = activities = self.graphic_time.activities
 
         activities_filtered = []
         empty = False
-        if activities is None:
+        if len(activities) == 0:
             empty = True
             self.activities_extract = []
 
@@ -374,11 +378,3 @@ class DataFrame:
         self.re_json.add_json('filter_activities', self.activities_extract)
         logging.info(f'filter_activities: Fim do filtro das atividades, valores retornados: {activities_filtered}')
         return activities_filtered
-
-    def return_name_graphic(self, name: str) -> str:
-        """
-
-        :param name: Nome do grafico
-        :return: Retorna o nome do grafico concatenado com a data e hora mas a constante DIRECTORY_PLOTAGENS
-        """
-        return DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_' + name
