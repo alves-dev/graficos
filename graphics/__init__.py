@@ -1,0 +1,2 @@
+from graphics.graphic_netflix import GraphicNetflix
+from graphics.graphic_time import GraphicTime

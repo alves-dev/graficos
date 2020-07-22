@@ -1,5 +1,5 @@
 import unittest
-import netflix_rules
+from rules import netflix_rules
 
 
 class TestNetflixRules(unittest.TestCase):
