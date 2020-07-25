@@ -81,12 +81,12 @@ async def main():
             'arquivos_testes/Historico_tempo_26 - Página1.csv']
 
     gt = GraphicTime(directory=csvs, columns_interval=['10/05/2020', '25/05/2020'], columns_days=['Segunda'],
-                     index_interval=['08:00:00', '23:30:00'], activities=['Dev'])
+                     index_interval=['08:00:00', '23:30:00'], activities=['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'Faculdade'])
     # activities ['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'Faculdade']
     gt2 = GraphicTime(directory=csvs)
     #return_time = plot_time(gt=gt2)
 
-    await asyncio.wait([de.list_files(1), plot_time(gt=gt2)])
+    await asyncio.wait([de.list_files(1), plot_time(gt=gt)])
     #print(return_time)
 
 
