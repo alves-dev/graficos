@@ -71,7 +71,6 @@ async def main():
 
     de = Delete(DIRECTORY_PLOTAGENS)
 
-
     gn = GraphicNetflix(directory='arquivos_testes/NetflixViewingHistory.csv')
     netflix(gn=gn)
 
@@ -84,9 +83,10 @@ async def main():
                      index_interval=['08:00:00', '23:30:00'], activities=['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'Faculdade'])
     # activities ['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'Faculdade']
     gt2 = GraphicTime(directory=csvs)
-    #return_time = plot_time(gt=gt2)
 
     await asyncio.wait([de.list_files(1), plot_time(gt=gt)])
+
+    # return_time = plot_time(gt=gt2)
     #print(return_time)
 
 
