@@ -1,6 +1,4 @@
-arquivos/logs/*
-arquivos/plotagens/*
-arquivos/retornos_json/*
+arquivos/*
 
 .idea/*
 # Coisas específicas do usuário
