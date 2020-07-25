@@ -1,4 +1,4 @@
-from utils.constants import DIRECTORY_PLOTAGENS
+from utils import DIRECTORY_PLOTAGENS
 from datetime import datetime
 
 
