@@ -1,13 +1,14 @@
 from netflix import Netflix
 from my_time import DataFrame
-import json
 import logging
 from datetime import datetime
-from constants import DIRECTORY_LOGS
+from constants import DIRECTORY_LOGS, DIRECTORY_PLOTAGENS
 from graphics import GraphicNetflix, GraphicTime
+from files import Delete
+import asyncio
 
 
-def netflix(gn: GraphicNetflix) -> json:
+def netflix(gn: GraphicNetflix) -> dict:
     """
     Define tipo de grafico e parametros
 
@@ -17,13 +18,13 @@ def netflix(gn: GraphicNetflix) -> json:
 
     logging.info('---Iniciado netflix---')
     nf = Netflix(graphic_netflix=gn)
-    nf.plot()
+    return_json_dict = nf.plot()
     logging.info('---Finalizado netflix---')
 
-    return json
+    return return_json_dict
 
 
-def plot_time(gt: GraphicTime) -> dict:
+async def plot_time(gt: GraphicTime) -> dict:
     """
     Realiza as chamadas dos metodos na ordem...
 
@@ -41,10 +42,19 @@ def plot_time(gt: GraphicTime) -> dict:
     logging.info('---Iniciado plot_time---')
 
     df = DataFrame(graphic_time=gt)
+    print('data criado')
+    await asyncio.sleep(0.1)
     df.new_data_frame()
+    await asyncio.sleep(0.1)
     df.filters()
+    print('filtrado')
+    await asyncio.sleep(0.1)
     df.extract_values()
+    print('extraido')
+    await asyncio.sleep(0.1)
     data = df.filter_activities()
+    print('activies')
+    await asyncio.sleep(0.1)
     return_json_dict = df.plotar(data=data)
 
     logging.info('---Finalizado plot_time---')
@@ -57,7 +67,11 @@ def config_log():
                         format='%(asctime)s - %(levelname)s: %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
 
 
-def main():
+async def main():
+
+    de = Delete(DIRECTORY_PLOTAGENS)
+
+
     gn = GraphicNetflix(directory='arquivos_testes/NetflixViewingHistory.csv')
     netflix(gn=gn)
 
@@ -70,9 +84,12 @@ def main():
                      index_interval=['08:00:00', '23:30:00'], activities=['Dev'])
     # activities ['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'Faculdade']
     gt2 = GraphicTime(directory=csvs)
-    return_time = plot_time(gt=gt2)
-    print(return_time)
+    #return_time = plot_time(gt=gt2)
+
+    await asyncio.wait([de.list_files(1), plot_time(gt=gt2)])
+    #print(return_time)
 
 
 if __name__ == '__main__':
-    main()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
