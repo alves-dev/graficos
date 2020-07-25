@@ -30,7 +30,7 @@ Ver de forma grafica como esta distribuído o meu tempo.
 * Testes em python
 * Heranças em python
 * Operador ternário em python
-
+* SOLID
 
 ## Utilizando
 ```
@@ -53,3 +53,7 @@ It is generally recommended to use the first option.
 The last example yields this result:
 
 ![ReplyKeyboardMarkup](https://farm3.staticflickr.com/2933/32418726704_9ef76093cf_o_d.jpg "ReplyKeyboardMarkup")
+![](https://github.com/alves-dev/igormoreiraalves/blob/master/images/botinho.jpeg?raw=true)
+![](https://i.pinimg.com/236x/a8/65/77/a86577eeaa8d0c3bb3d419defa71fe81.jpg)
+![](https://github.com/alves-dev/igormoreiraalves/blob/master/images/botinho.jpeg)
+![](https://www.infowester.com/img_art/form_img/jpegcomp1.jpg)
