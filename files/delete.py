@@ -1,5 +1,5 @@
 from typing import Tuple
-from utils.constants import DELETE_FILES_DAYS
+from utility.constants import DELETE_FILES_DAYS
 from os import listdir, remove
 from datetime import datetime
 import asyncio

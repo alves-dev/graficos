@@ -1,4 +1,4 @@
-from utils.return_json import ReturnJson
+from utility.return_json import ReturnJson
 import unittest
 
 

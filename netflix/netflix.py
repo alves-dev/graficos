@@ -1,7 +1,7 @@
 from typing import Union, Tuple
 from matplotlib import pyplot as plt
 import logging
-from utils import ReturnJson
+from utility import ReturnJson
 from rules import netflix_rules as nr
 from graphics import GraphicNetflix
 

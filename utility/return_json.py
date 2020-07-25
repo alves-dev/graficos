@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from utils.constants import DIRECTORY_RETORNOS
+from utility.constants import DIRECTORY_RETORNOS
 import logging
 
 

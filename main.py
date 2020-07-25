@@ -2,7 +2,7 @@ from netflix import Netflix
 from my_time import DataFrame
 import logging
 from datetime import datetime
-from utils.constants import DIRECTORY_LOGS, DIRECTORY_PLOTAGENS
+from utility import DIRECTORY_LOGS, DIRECTORY_PLOTAGENS
 from graphics import GraphicNetflix, GraphicTime
 from files import Delete
 import asyncio

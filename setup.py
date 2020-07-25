@@ -7,5 +7,5 @@ setup(name='graficos',
       author='Igor Moreira',
       author_email='alvesmoreiraigor@gmail.com',
       license='MIT',
-      packages=['files', 'graphics', 'my_time', 'netflix', 'rules', 'utils'],
+      packages=['files', 'graphics', 'my_time', 'netflix', 'rules', 'utility'],
       zip_safe=False)
