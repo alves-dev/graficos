@@ -1,5 +1,5 @@
 from netflix import Netflix
-from constants import DIRECTORY_PLOTAGENS
+from utils.constants import DIRECTORY_PLOTAGENS
 from datetime import datetime
 import unittest
 from graphics.graphic_netflix import GraphicNetflix

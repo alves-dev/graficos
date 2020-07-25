@@ -1,5 +1,5 @@
 from typing import Tuple
-from constants import DIRECTORY_PLOTAGENS, DIRECTORY_RETORNOS, DIRECTORY_LOGS, DELETE_FILES_DAYS
+from utils.constants import DELETE_FILES_DAYS
 from os import listdir, remove
 from datetime import datetime
 import asyncio

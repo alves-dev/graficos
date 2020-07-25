@@ -1,6 +1,6 @@
 from my_time import DataFrame
 import unittest
-from constants import DIRECTORY_PLOTAGENS
+from utils.constants import DIRECTORY_PLOTAGENS
 from datetime import datetime
 from graphics.graphic_time import GraphicTime
 
