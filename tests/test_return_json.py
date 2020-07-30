@@ -1,9 +1,10 @@
-from utility.return_json import ReturnJson
+from utility import ReturnJson, Directory
 import unittest
 
 
 class TestReturnJson(unittest.TestCase):
-    re = ReturnJson()
+    direc = Directory()
+    re = ReturnJson(direc.DIRECTORY_RETORNOS)
 
     def test_add_json(self):
         self.re.add_json('chave', 'valor')

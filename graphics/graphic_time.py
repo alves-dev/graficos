@@ -1,4 +1,6 @@
 from graphics.interface_graphic import InterfaceGraphics
+from datetime import datetime
+from utility import Directory
 
 
 class GraphicTime(InterfaceGraphics):
@@ -18,7 +20,7 @@ class GraphicTime(InterfaceGraphics):
     def __init__(self, directory, type_graphic: list = ['all'], title: str = 'Atividades', label_axisx: str = '',
                  label_axisy: str = 'Quantidade / 2 = X horas ', index: list = [], index_interval: list = [],
                  columns: list = [], columns_days: list = [], columns_interval: list = [], activities: list = [],
-                 label_rotation_x='60'):
+                 label_rotation_x='60', directory_save: Directory = Directory()):
         InterfaceGraphics.__init__(self, type_graphic, title, label_axisx, label_axisy, directory)
         self.index = index
         self.index_interval = index_interval
@@ -27,3 +29,7 @@ class GraphicTime(InterfaceGraphics):
         self.columns_interval = columns_interval
         self.activities = activities
         self.label_rotation_x = label_rotation_x
+        self.directory_save = directory_save
+
+    def return_name_graphic(self, name: str) -> str:
+        return self.directory_save.DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_' + name

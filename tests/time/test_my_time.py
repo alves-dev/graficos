@@ -1,6 +1,6 @@
 from my_time import DataFrame
 import unittest
-from utility.constants import DIRECTORY_PLOTAGENS
+from utility import Directory
 from datetime import datetime
 from graphics.graphic_time import GraphicTime
 
@@ -13,7 +13,8 @@ class TestMyTime(unittest.TestCase):
     gt = GraphicTime(directory=csvs, columns_interval=['10/05/2020', '25/05/2020'], columns_days=['Segunda'],
                      index_interval=['08:00:00', '23:30:00'])
     df = DataFrame(graphic_time=gt)
+    direc = Directory()
 
     def test_return_name_graphic(self):
         name = self.gt.return_name_graphic('test')
-        self.assertEqual(name, DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_' + 'test')
+        self.assertEqual(name, self.direc.DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_' + 'test')

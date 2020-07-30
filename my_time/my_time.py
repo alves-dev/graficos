@@ -13,7 +13,7 @@ class DataFrame:
         self.data_time_filtered = None
         self.values_extract = None
         self.activities_extract = None
-        self.re_json = ReturnJson()
+        self.re_json = ReturnJson(graphic_time.directory_save.DIRECTORY_RETORNOS)
         self.graphic_time = graphic_time
 
     def new_data_frame(self) -> None:

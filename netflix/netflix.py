@@ -9,7 +9,7 @@ from graphics import GraphicNetflix
 class Netflix:
     def __init__(self, graphic_netflix: GraphicNetflix):
         self.years_dic = {}
-        self.re_json = ReturnJson()
+        self.re_json = ReturnJson(graphic_netflix.directory_save.DIRECTORY_RETORNOS)
         self.graphic_netflix = graphic_netflix
 
     def plot(self) -> Union[bool, dict]:

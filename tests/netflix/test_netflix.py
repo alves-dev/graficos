@@ -1,5 +1,5 @@
 from netflix import Netflix
-from utility.constants import DIRECTORY_PLOTAGENS
+from utility import Directory
 from datetime import datetime
 import unittest
 from graphics.graphic_netflix import GraphicNetflix
@@ -9,6 +9,7 @@ class TestNetflix(unittest.TestCase):
     gn = GraphicNetflix(directory='arquivos_testes/NetflixViewingHistory.csv', type_graphic="bars",
                         label_rotation_x='60')
     net = Netflix(graphic_netflix=gn)
+    direc = Directory()
 
     def test_plot(self):
         re = self.net.plot()
@@ -24,4 +25,4 @@ class TestNetflix(unittest.TestCase):
         :return:
         """
         name = self.gn.return_name_graphic('test')
-        self.assertEqual(name, DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_' + 'test')
+        self.assertEqual(name, self.direc.DIRECTORY_PLOTAGENS + datetime.today().strftime("%Y-%m-%d_%H-%M") + '_' + 'test')

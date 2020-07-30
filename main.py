@@ -2,7 +2,7 @@ from netflix import Netflix
 from my_time import DataFrame
 import logging
 from datetime import datetime
-from utility import DIRECTORY_LOGS, DIRECTORY_PLOTAGENS
+from utility import Directory
 from graphics import GraphicNetflix, GraphicTime
 from files import Delete
 import asyncio
@@ -62,14 +62,16 @@ async def plot_time(gt: GraphicTime) -> dict:
     return return_json_dict
 
 
-def config_log():
-    logging.basicConfig(filename=DIRECTORY_LOGS + datetime.today().strftime("%Y-%m-%d") + '.log', level=logging.INFO,
-                        format='%(asctime)s - %(levelname)s: %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
+def config_log(directory: Directory = Directory()):
+    name = directory.DIRECTORY_LOGS + datetime.today().strftime("%Y-%m-%d_%H") + '.log'
+    logging.basicConfig(filename=name, level=logging.INFO, format='%(asctime)s - %(levelname)s: %(message)s',
+                        datefmt='%d/%m/%Y %H:%M:%S')
 
 
 async def main():
+    direc = Directory()
 
-    de = Delete(DIRECTORY_PLOTAGENS)
+    de = Delete(direc)
 
     gn = GraphicNetflix(directory='arquivos_testes/NetflixViewingHistory.csv')
     netflix(gn=gn)
@@ -80,14 +82,15 @@ async def main():
             'arquivos_testes/Historico_tempo_26 - Página1.csv']
 
     gt = GraphicTime(directory=csvs, columns_interval=['10/05/2020', '25/05/2020'], columns_days=['Segunda'],
-                     index_interval=['08:00:00', '23:30:00'], activities=['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'Faculdade'])
+                     index_interval=['08:00:00', '23:30:00'],
+                     activities=['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'Faculdade'])
     # activities ['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'Faculdade']
     gt2 = GraphicTime(directory=csvs)
 
     await asyncio.wait([de.list_files(1), plot_time(gt=gt)])
 
     # return_time = plot_time(gt=gt2)
-    #print(return_time)
+    # print(return_time)
 
 
 if __name__ == '__main__':
