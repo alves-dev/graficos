@@ -1,7 +1,7 @@
+from main import Boot
 from netflix import Netflix
 from my_time import DataFrame
 import logging
-from datetime import datetime
 from utility import Directory
 from graphics import GraphicNetflix, GraphicTime
 from files import Delete
@@ -14,7 +14,6 @@ def netflix(gn: GraphicNetflix) -> dict:
 
     :return: Uma string com o caminho da imagem gerada
     """
-    config_log()
 
     logging.info('---Iniciado netflix---')
     nf = Netflix(graphic_netflix=gn)
@@ -38,7 +37,7 @@ async def plot_time(gt: GraphicTime) -> dict:
         :key activities: uma lista contendo atividades para serem filtradas = ['Dev', 'Trabalho', 'Descanso', 'TCC']
     :return: ALTERAR O RETORNO PARA UM json
     """
-    config_log()
+
     logging.info('---Iniciado plot_time---')
 
     df = DataFrame(graphic_time=gt)
@@ -60,12 +59,6 @@ async def plot_time(gt: GraphicTime) -> dict:
     logging.info('---Finalizado plot_time---')
 
     return return_json_dict
-
-
-def config_log(directory: Directory = Directory()):
-    name = directory.DIRECTORY_LOGS + datetime.today().strftime("%Y-%m-%d_%H") + '.log'
-    logging.basicConfig(filename=name, level=logging.INFO, format='%(asctime)s - %(levelname)s: %(message)s',
-                        datefmt='%d/%m/%Y %H:%M:%S')
 
 
 async def main():

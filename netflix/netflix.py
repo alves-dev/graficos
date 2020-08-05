@@ -1,5 +1,7 @@
 from typing import Union, Tuple
 from matplotlib import pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
 import logging
 from utility import ReturnJson
 from rules import netflix_rules as nr
@@ -53,6 +55,7 @@ class Netflix:
         figure.set_size_inches(12, 8)
         name = self.graphic_netflix.return_name_graphic('netflix')
         plt.savefig(name)
+        #plt.close()
         # plt.show()
         self.re_json.add_json('plotado', name)
         self.re_json.save_json()
