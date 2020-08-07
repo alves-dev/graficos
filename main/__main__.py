@@ -67,7 +67,9 @@ async def main():
     de = Delete(direc)
 
     gn = GraphicNetflix(directory='arquivos_testes/NetflixViewingHistory.csv')
+    gn2 = GraphicNetflix(directory='arquivos_testes/NetflixViewingHistory.csv', type_graphic='bars')
     netflix(gn=gn)
+    netflix(gn=gn2)
 
     csvs = ['arquivos_testes/Historico_tempo_22 - Página1.csv', 'arquivos_testes/Historico_tempo_23 - Página1.csv',
             'arquivos_testes/Historico_tempo_20 - Página1.csv', 'arquivos_testes/Historico_tempo_21 - Página1.csv',
