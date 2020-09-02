@@ -1,2 +1,2 @@
-from utility.return_json import ReturnJson
-from utility.directories import Directory
+from .return_json import ReturnJson
+from .directories import Directory

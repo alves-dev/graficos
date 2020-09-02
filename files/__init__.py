@@ -1,1 +1,1 @@
-from files.delete import Delete
+from .delete import Delete
