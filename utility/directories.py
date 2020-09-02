@@ -1,10 +1,11 @@
 from os import path
 import os
+from constants import DIRECTORY_RETURNS, DIRECTORY_LOGS, DIRECTORY_PL0TAGS
 
 
 class Directory:
-    def __init__(self, directory_logs='arquivos/logs/', directory_retornos='arquivos/retornos_json/',
-                 directory_plotagens='arquivos/plotagens/', delete_files_days=5):
+    def __init__(self, directory_logs=DIRECTORY_LOGS, directory_retornos=DIRECTORY_RETURNS,
+                 directory_plotagens=DIRECTORY_PL0TAGS, delete_files_days=5):
         self.DIRECTORY_LOGS = directory_logs
         self.DIRECTORY_RETORNOS = directory_retornos
         self.DIRECTORY_PLOTAGENS = directory_plotagens
