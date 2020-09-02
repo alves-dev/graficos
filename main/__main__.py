@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.extend([os.path.dirname(os.path.dirname(os.path.abspath(__file__)))])
+
 from main import Boot
 from netflix import Netflix
 from my_time import DataFrame
