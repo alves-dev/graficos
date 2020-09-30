@@ -329,12 +329,16 @@ class DataFrame:
         exemplo= [{'13/05/2020': {'Trabalho': 17}}, {'14/05/2020': {'Dev': 2, 'Trabalho': 21}}]
         """
 
-        # TODO Em caso de ser filtrado apenas uma coluna esse metodo ira dar um erro, VERIFICAR
         columns = list(self.data_time_filtered.columns.values)
         index_c = len(columns) - 1
         values = []
         for i in columns:
             df = self.data_time_filtered.groupby(i).count()
+            # Gambiarra para não gerar erro ao filtrar apenas uma coluna/data
+            if len(columns) == 1:
+                df = self.data_time.groupby(i).count()
+                columns = list(self.data_time.columns.values)
+
             dict_value = {i: dict(df[columns[index_c]])}
             index_c = 0
             values.append(dict_value)
