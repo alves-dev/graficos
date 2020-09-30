@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='graficos',
-      version='0.5',
+      version='1.0',
       description='Geração de graficos',
       url='https://github.com/alves-dev/graficos',
       author='Igor Moreira',
