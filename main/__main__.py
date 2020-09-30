@@ -75,18 +75,18 @@ async def main():
     netflix(gn=gn)
     netflix(gn=gn2)
 
-    csvs = ['arquivos_testes/Historico_tempo_22 - Página1.csv', 'arquivos_testes/Historico_tempo_23 - Página1.csv',
-            'arquivos_testes/Historico_tempo_20 - Página1.csv', 'arquivos_testes/Historico_tempo_21 - Página1.csv',
-            'arquivos_testes/Historico_tempo_24 - Página1.csv', 'arquivos_testes/Historico_tempo_25 - Página1.csv',
-            'arquivos_testes/Historico_tempo_26 - Página1.csv']
+    csvs = ['arquivos_testes/Historico_tempo_2020_33.csv', 'arquivos_testes/Historico_tempo_2020_34.csv',
+            'arquivos_testes/Historico_tempo_2020_35.csv', 'arquivos_testes/Historico_tempo_2020_36.csv',
+            'arquivos_testes/Historico_tempo_2020_37.csv', 'arquivos_testes/Historico_tempo_2020_38.csv',
+            'arquivos_testes/Historico_tempo_2020_39.csv']
 
-    gt = GraphicTime(directory=csvs, columns_interval=['10/05/2020', '25/05/2020'], columns_days=['Segunda'],
+    gt = GraphicTime(directory=csvs, columns_interval=['10/08/2020', '25/08/2020'], columns_days=['Segunda'],
                      index_interval=['08:00:00', '23:30:00'],
                      activities=['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'Faculdade'])
     # activities ['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'Faculdade']
-    gt2 = GraphicTime(directory=csvs)
+    gt2 = GraphicTime(directory=csvs, columns=['21/09/2020'])
 
-    await asyncio.wait([de.list_files(1), plot_time(gt=gt)])
+    await asyncio.wait([de.list_files(1), plot_time(gt=gt2)])
 
     # return_time = plot_time(gt=gt2)
     # print(return_time)
