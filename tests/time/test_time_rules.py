@@ -1,5 +1,5 @@
 import unittest
-from rules import time_rules
+from validations import time_rules
 
 
 class TestTimeRules(unittest.TestCase):
