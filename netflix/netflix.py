@@ -4,7 +4,7 @@ import matplotlib
 matplotlib.use('Agg')
 import logging
 from utility import ReturnJson
-from rules import netflix_rules as nr
+from validations import netflix_rules as nr
 from graphics import GraphicNetflix
 
 
