@@ -1,7 +1,8 @@
 from setuptools import setup
+from constants import VERSION_GRAPHICS
 
 setup(name='graficos',
-      version='1.1.0',
+      version=VERSION_GRAPHICS,
       description='Geração de graficos',
       url='https://github.com/alves-dev/graficos',
       author='Igor Moreira',
