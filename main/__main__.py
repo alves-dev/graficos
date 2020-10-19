@@ -27,7 +27,7 @@ def netflix(gn: GraphicNetflix) -> dict:
     return return_json_dict
 
 
-async def plot_time(gt: GraphicTime) -> dict:
+def plot_time(gt: GraphicTime) -> dict:
     """
     Realiza as chamadas dos metodos na ordem...
 
@@ -46,18 +46,18 @@ async def plot_time(gt: GraphicTime) -> dict:
 
     df = DataFrame(graphic_time=gt)
     print('data criado')
-    await asyncio.sleep(0.1)
+    #await asyncio.sleep(0.1)
     df.new_data_frame()
-    await asyncio.sleep(0.1)
+    #await asyncio.sleep(0.1)
     df.filters()
     print('filtrado')
-    await asyncio.sleep(0.1)
+    #await asyncio.sleep(0.1)
     df.extract_values()
     print('extraido')
-    await asyncio.sleep(0.1)
+    #await asyncio.sleep(0.1)
     data = df.filter_activities()
     print('activies')
-    await asyncio.sleep(0.1)
+    #await asyncio.sleep(0.1)
     return_json_dict = df.plotar(data=data)
 
     logging.info('---Finalizado plot_time---')
@@ -65,7 +65,7 @@ async def plot_time(gt: GraphicTime) -> dict:
     return return_json_dict
 
 
-async def main():
+def main():
     direc = Directory()
 
     de = Delete(direc)
@@ -75,23 +75,23 @@ async def main():
     netflix(gn=gn)
     netflix(gn=gn2)
 
-    csvs = ['arquivos_testes/Historico_tempo_2020_33.csv', 'arquivos_testes/Historico_tempo_2020_34.csv',
-            'arquivos_testes/Historico_tempo_2020_35.csv', 'arquivos_testes/Historico_tempo_2020_36.csv',
+    csvs = ['arquivos_testes/Historico_tempo_2020_40.csv', 'arquivos_testes/Historico_tempo_2020_41.csv',
+            'arquivos_testes/Historico_tempo_2020_42.csv', 'arquivos_testes/Historico_tempo_2020_43.csv',
             'arquivos_testes/Historico_tempo_2020_37.csv', 'arquivos_testes/Historico_tempo_2020_38.csv',
             'arquivos_testes/Historico_tempo_2020_39.csv']
 
-    gt = GraphicTime(directory=csvs, columns_interval=['10/08/2020', '25/08/2020'], columns_days=['Segunda'],
-                     index_interval=['08:00:00', '23:30:00'],
-                     activities=['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'Faculdade'])
+    gt = GraphicTime(directory=csvs, columns_interval=['19/09/2020', '19/10/2020'], type_graphic=['scatter'],
+                     activities=['Dev'])
     # activities ['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'Faculdade']
     gt2 = GraphicTime(directory=csvs, columns=['21/09/2020'])
 
-    await asyncio.wait([de.list_files(1), plot_time(gt=gt2)])
+    #await asyncio.wait([de.list_files(1), plot_time(gt=gt)])
 
-    # return_time = plot_time(gt=gt2)
+    return_time = plot_time(gt=gt)
     # print(return_time)
 
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    '''loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())'''
+    main()
