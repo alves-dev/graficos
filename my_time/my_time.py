@@ -376,6 +376,8 @@ class DataFrame:
 
                 if act in v:
                     sub_dict_temp[act] = v[act]
+                else:
+                    sub_dict_temp[act] = 0
                 dict_temp[list(i.keys())[0]] = sub_dict_temp
 
             if len(sub_dict_temp) > 0:
