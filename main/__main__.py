@@ -80,9 +80,9 @@ def main():
             'arquivos_testes/Historico_tempo_2020_37.csv', 'arquivos_testes/Historico_tempo_2020_38.csv',
             'arquivos_testes/Historico_tempo_2020_39.csv']
 
-    gt = GraphicTime(directory=csvs, columns_interval=['19/09/2020', '19/10/2020'], type_graphic=['scatter'],
-                     activities=['Dev'])
-    # activities ['Dev', 'TCC', 'Trabalho', 'Dormi', 'Outros', 'Descanso', 'Faculdade']
+    gt = GraphicTime(directory=csvs, columns_interval=['29/09/2020', '16/10/2020'], type_graphic=['scatter'],
+                     activities=['Trabalho', 'Dormir', 'Descanso', ])
+    # activities ['Dev', 'TCC', 'Trabalho', 'Dormir', 'Outros', 'Descanso', 'Faculdade']
     gt2 = GraphicTime(directory=csvs, columns=['21/09/2020'])
 
     #await asyncio.wait([de.list_files(1), plot_time(gt=gt)])
