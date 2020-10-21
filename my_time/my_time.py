@@ -375,7 +375,7 @@ class DataFrame:
                     self.activities_extract.append(act)
 
                 if act in v:
-                    sub_dict_temp[act] = v[act]
+                    sub_dict_temp[act] = int(v[act]) / 2
                 else:
                     sub_dict_temp[act] = 0
                 dict_temp[list(i.keys())[0]] = sub_dict_temp
