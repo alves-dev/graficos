@@ -18,7 +18,7 @@ class GraphicTime(InterfaceGraphics):
         """
 
     def __init__(self, directory, type_graphic: list = ['all'], title: str = 'Atividades', label_axisx: str = '',
-                 label_axisy: str = 'Quantidade / 2 = X horas ', index: list = [], index_interval: list = [],
+                 label_axisy: str = 'Quantidade de horas ', index: list = [], index_interval: list = [],
                  columns: list = [], columns_days: list = [], columns_interval: list = [], activities: list = [],
                  label_rotation_x='60', directory_save: Directory = Directory()):
         InterfaceGraphics.__init__(self, type_graphic, title, label_axisx, label_axisy, directory)
