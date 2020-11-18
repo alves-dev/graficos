@@ -126,6 +126,9 @@ class DataFrame:
             ax.plot(labels, sizes, label=act)
             ax.scatter(labels, sizes)
 
+            r = ax.bar(labels, sizes)
+            self.auto_label(r, ax)
+
             labels = []
             sizes = []
 
