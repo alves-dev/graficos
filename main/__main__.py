@@ -75,13 +75,11 @@ def main():
     netflix(gn=gn)
     netflix(gn=gn2)
 
-    csvs = ['arquivos_testes/Historico_tempo_2020_40.csv', 'arquivos_testes/Historico_tempo_2020_41.csv',
-            'arquivos_testes/Historico_tempo_2020_42.csv', 'arquivos_testes/Historico_tempo_2020_43.csv',
-            'arquivos_testes/Historico_tempo_2020_37.csv', 'arquivos_testes/Historico_tempo_2020_38.csv',
-            'arquivos_testes/Historico_tempo_2020_39.csv']
+    csvs = ['arquivos_testes/Historico_tempo_2020_44.csv', 'arquivos_testes/Historico_tempo_2020_45.csv',
+            'arquivos_testes/Historico_tempo_2020_46.csv', 'arquivos_testes/Historico_tempo_2020_47.csv']
 
-    gt = GraphicTime(directory=csvs, columns_interval=['29/09/2020', '16/10/2020'], type_graphic=['scatter'],
-                     activities=['Trabalho', 'Dormir', 'Descanso', ])
+    gt = GraphicTime(directory=csvs, columns_interval=['25/10/2020', '17/11/2020'], type_graphic=['scatter'],
+                     activities=['Trabalho'])
     # activities ['Dev', 'TCC', 'Trabalho', 'Dormir', 'Outros', 'Descanso', 'Faculdade']
     gt2 = GraphicTime(directory=csvs, columns=['21/09/2020'])
 
