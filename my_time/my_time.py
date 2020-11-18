@@ -67,7 +67,6 @@ class DataFrame:
             name = self.graphic_time.return_name_graphic('pie')
             plt.savefig(name)
             logging.info(f'plotar: Grafico pie plotado e salvo em {name}')
-            # plt.show()
             list_return.append({'pie': name})
 
         if 'bar' in types or 'all' in types:
@@ -84,7 +83,6 @@ class DataFrame:
             name = self.graphic_time.return_name_graphic('bar')
             plt.savefig(name)
             logging.info(f'plotar: Grafico bar plotado e salvo em {name}')
-            # plt.show()
             list_return.append({'bar': name})
 
         if 'stem' in types or 'all' in types:
@@ -98,12 +96,15 @@ class DataFrame:
             name = self.graphic_time.return_name_graphic('stem')
             plt.savefig(name)
             logging.info(f'plotar: Grafico stem plotado e salvo em {name}')
-            # plt.show()
             list_return.append({'stem': name})
 
         if 'scatter' in types or 'all' in types:
             name = self.plot_scatter(data)
             list_return.append({'scatter': name})
+
+        if 'bar_label' in types or 'all' in types:
+            name = self.plot_bar_label(data)
+            list_return.append({'bar_label': name})
 
         self.re_json.add_json('plotado', list_return)
         self.re_json.save_json()
@@ -124,10 +125,7 @@ class DataFrame:
                     val = temp[act]
                 sizes.append(val)
             ax.plot(labels, sizes, label=act)
-            ax.scatter(labels, sizes)
-
-            r = ax.bar(labels, sizes)
-            self.auto_label(r, ax)
+            ax.scatter(labels, sizes, label=act)
 
             labels = []
             sizes = []
@@ -141,7 +139,37 @@ class DataFrame:
         name = self.graphic_time.return_name_graphic('scatter')
         plt.savefig(name)
         logging.info(f'plotar: Grafico scatter plotado e salvo em {name}')
-        # plt.show()
+        return name
+
+    def plot_bar_label(self, data) -> str:
+
+        fig, ax = plt.subplots()
+
+        labels = []
+        sizes = []
+        for act in self.activities_extract:
+            for i in data:
+                labels.append(list(i.keys())[0])
+                temp = (list(i.values())[0])
+                val = 0
+                if act in list(temp.keys()):
+                    val = temp[act]
+                sizes.append(val)
+            r = ax.bar(labels, sizes)
+            self.auto_label(r, ax)
+
+            labels = []
+            sizes = []
+
+        ax.set_ylabel(self.graphic_time.label_axisy)
+        ax.set_title(self.graphic_time.title)
+        plt.xticks(rotation=self.graphic_time.label_rotation_x)
+        plt.legend()
+        figure = plt.gcf()
+        figure.set_size_inches(12, 8)
+        name = self.graphic_time.return_name_graphic('bar_label')
+        plt.savefig(name)
+        logging.info(f'plotar: Grafico bar_label plotado e salvo em {name}')
         return name
 
     def auto_label(self, rects, ax):

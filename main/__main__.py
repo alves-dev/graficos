@@ -70,15 +70,17 @@ def main():
 
     de = Delete(direc)
 
+    '''
     gn = GraphicNetflix(directory='arquivos_testes/NetflixViewingHistory.csv')
-    gn2 = GraphicNetflix(directory='arquivos_testes/NetflixViewingHistory.csv', type_graphic='bars')
+    gn2 = GraphicNetflix(directory='arquivos_testes/NetflixViewingHistory.csv', type_graphic='compare')
     netflix(gn=gn)
     netflix(gn=gn2)
+    '''
 
     csvs = ['arquivos_testes/Historico_tempo_2020_44.csv', 'arquivos_testes/Historico_tempo_2020_45.csv',
             'arquivos_testes/Historico_tempo_2020_46.csv', 'arquivos_testes/Historico_tempo_2020_47.csv']
 
-    gt = GraphicTime(directory=csvs, columns_interval=['25/10/2020', '17/11/2020'], type_graphic=['scatter'],
+    gt = GraphicTime(directory=csvs, columns_interval=['15/11/2020', '18/11/2020'], type_graphic=['bar_label'],
                      activities=['Trabalho'])
     # activities ['Dev', 'TCC', 'Trabalho', 'Dormir', 'Outros', 'Descanso', 'Faculdade']
     gt2 = GraphicTime(directory=csvs, columns=['21/09/2020'])
