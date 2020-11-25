@@ -125,7 +125,7 @@ class DataFrame:
                     val = temp[act]
                 sizes.append(val)
             ax.plot(labels, sizes, label=act)
-            ax.scatter(labels, sizes, label=act)
+            ax.scatter(labels, sizes)
 
             labels = []
             sizes = []
